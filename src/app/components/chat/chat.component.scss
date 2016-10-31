@@ -1,0 +1,30 @@
+// component styles are encapsulated and only applied to their components
+#page-content-wrapper {
+  background-color: transparent;
+  flex-direction: column;
+  position: relative;
+  .pane-chat-messages{
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    z-index: 100;
+    box-sizing: border-box;
+    transition: background .3s ease-out .1s;
+    background-color: transparent;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    .pane-chat-empty{
+      flex: 1 1 auto;
+      min-height: 12px;
+    }
+    .message-list{
+      flex: 0 0 auto;
+      padding-bottom: 8px;
+      transition: padding .3s cubic-bezier(.69,0,.79,.14);
+
+    }
+  }
+}
+

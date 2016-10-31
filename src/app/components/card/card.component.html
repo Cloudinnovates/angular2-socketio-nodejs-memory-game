@@ -1,0 +1,7 @@
+<div class="card" [class.flipped]="item.state" (click)="getFlip($event)">
+  <figure class="front"></figure>
+  <figure class="back">
+    <img *ngIf="item.state" src="/img/icons/{{item.image}}.svg"/>
+    <span class="label label-default">{{item.username}}</span>
+  </figure>
+</div>

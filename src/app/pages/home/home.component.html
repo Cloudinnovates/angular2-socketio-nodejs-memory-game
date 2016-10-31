@@ -1,0 +1,35 @@
+<div class="wrapper">
+  <main>
+    <div *ngIf="this.user" class="the-game">
+      <div class="container-fluid">
+        <p><a class="btn btn-default btn-lg" role="button" (click)="newGame()">New Game</a> <a class="btn btn-primary btn-lg" role="button" (click)="logout()">Logout</a></p>
+        <h2 *ngIf="jwt">Your JWT is:</h2>
+        <pre *ngIf="jwt" class="jwt"><code>{{ jwt }}</code></pre>
+        <pre *ngIf="jwt" class="jwt"><code>{{ decodedJwt | json }}</code></pre>
+      </div>
+      <my-card  *ngFor="let card of cards" [item]="card"></my-card>
+    </div>
+    <div *ngIf="!this.user" class="the-intro">
+      <h1>Intro</h1>
+    </div>
+  </main>
+  <aside class="pane">
+    <div *ngIf="this.user" class="game-information">
+      <div class="tabs-list">
+        <a href="#chat" aria-controls="chat" role="tab" data-toggle="tab">chat</a>
+        <a href="#scoreboard" aria-controls="scoreboard" role="tab" data-toggle="tab">scoreboard</a>
+      </div>
+      <div class="tab-content pane">
+        <div role="tabpanel" class="tab-pane active" id="chat">
+          <my-chat></my-chat>
+        </div>
+        <div role="tabpanel" class="tab-pane" id="scoreboard">
+          scoreboard
+        </div>
+      </div>
+    </div>
+    <div >
+      <my-login  *ngIf="!this.user" (onLogin)="onLogin($event)" ></my-login>
+    </div>
+  </aside>
+</div>

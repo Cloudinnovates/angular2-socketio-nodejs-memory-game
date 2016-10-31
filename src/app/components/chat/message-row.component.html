@@ -1,0 +1,17 @@
+<div  class="msg" [ngClass]="{'message-loading': message.isLoading}">
+  <div class="message" [class.message-out]="messageMode===1" [class.message-in]="messageMode===0">
+    <div class="bubble bubble-text">
+      <div class="message-user">
+        <strong>{{message.username}}</strong>
+      </div>
+      <div class="message-text">
+        {{message.message}}
+      </div>
+      <div class="message-meta">
+        <span class="glyphicon glyphicon-time"></span> <span class="message-datetime">{{timeAgo}}</span>
+        <span *ngIf="message.isLoading" class=" glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
+        <strong class="primary-font"></strong>
+      </div>
+    </div>
+  </div>
+</div>

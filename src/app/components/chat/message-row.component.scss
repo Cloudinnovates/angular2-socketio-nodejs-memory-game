@@ -1,0 +1,53 @@
+.msg{
+  padding-left: 9%;
+  padding-right: 9%;
+  margin-bottom: 12px;
+  position: relative;
+  &::after{
+    content: '';
+    display: table;
+    clear: both;
+  }
+  .message{
+    max-width: 65%;
+    &:last-of-type {
+      margin-bottom: 0;
+    }
+    &.message-out{
+      background-color: #dcf8c6;
+      float: right;
+      border-radius: 7.5px;
+      position: relative;
+      box-shadow: 0 1px .5px rgba(0,0,0,.13);
+    }
+    &.message-in{
+      background-color: #ffffff;
+      border-radius: 7.5px;
+      position: relative;
+      box-shadow: 0 1px .5px rgba(0,0,0,.13);
+      float: left;
+    }
+    .bubble{
+      padding: 6px 7px 8px 9px;
+      font-size: 13.6px;
+      .message-text{
+        position: relative;
+        line-height: 16px;
+        word-wrap: break-word;
+        color: #262626;
+        font-family: 'Open Sans',sans-serif;
+        &::after{
+          content: " \00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0";
+          display: inline;
+        }
+      }
+      .message-meta{
+        bottom: 3px;
+        right: 7px;
+        position: absolute;
+        height: 15px;
+        font-size: 11px;
+      }
+    }
+  }
+}

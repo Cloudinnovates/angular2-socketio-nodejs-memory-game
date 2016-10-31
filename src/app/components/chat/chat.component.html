@@ -1,0 +1,27 @@
+  <!-- Page Content -->
+  <div id="page-content-wrapper" class="pane height-full">
+    <div class="pane-body ">
+      <div #scrollMe id="pane-messages" class="pane-chat-messages">
+        <div class="pane-chat-empty"></div>
+        <div  id="message-list" class="message-list">
+          <my-message-row [message]="msg" *ngFor="let msg of messages; let idx = index"></my-message-row>
+        </div>
+      </div>
+    </div>
+    <footer class="pane-footer">
+      <div class="input-group">
+        <input
+          id="message-input"
+          type="text"
+          class="form-control"
+          placeholder="Write your message here..."
+          [(ngModel)]="draftMessageText"
+          (keydown.enter)="onEnter($event)"
+        />
+        <span  class="input-group-btn">
+              <button id="message-button" class="btn btn-secondary" type="button" (click)="onEnter($event)">Send</button>
+            </span>
+      </div>
+    </footer>
+  </div>
+  <!-- /#page-content-wrapper -->

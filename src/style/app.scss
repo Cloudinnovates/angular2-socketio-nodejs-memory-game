@@ -1,0 +1,57 @@
+// styles in src/style directory are applied to the whole page
+$icon-font-path: '~bootstrap-sass/assets/fonts/bootstrap/';
+@import './partials/bootstrap-custom';
+@import './partials/scroll-custom';
+
+html,body, my-app, .height-full{
+  height: 100%;
+}
+my-app{
+  display: block;
+}
+my-card{
+  background: #303641;
+  padding: 5px;
+  width: 120px;
+  height: 120px;
+  margin: 10px;
+  color: white;
+  position: relative;
+  perspective: 800px;
+}
+.pane {
+  display: flex;
+  overflow: hidden;
+  .pane-header{
+    order: 1;
+    position: relative;
+    padding: 10px;
+    padding-left: 16px;
+    padding-right: 15px;
+    display: flex;
+    height: 59px;
+    width: 100%;
+    background-color: #eee;
+    z-index: 1000;
+    h2{
+      font-size: 16px;
+      margin-top: 8px;
+    }
+  }
+  .pane-body{
+    //SAME AS flex: 1 1 auto;
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: auto;
+    position: relative;
+    order: 2;
+    z-index: 1;
+  }
+  .pane-footer{
+    background-color: #eee;
+    order: 3;
+    position: relative;
+    flex: none;
+    width: 100%;
+  }
+}
