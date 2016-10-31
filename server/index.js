@@ -134,14 +134,18 @@ io.on('connection', function(socket){
           socket.emit('CardStatus', JSON.stringify(cardTwo)); // Send message to sender
           socket.broadcast.emit('CardStatus', JSON.stringify(cardTwo)); // Send message to everyone BUT sender
         },1000);
+        var somethingLeft = _.find(cardsArray, ['lock', false]);
+        if(somethingLeft === undefined){
+          setTimeout(function(){
+            newGame();
+          },5000);
+        }
       }
     }
   });
   socket.on('CardNewGame', function (msg) {
     console.log('noticed new game');
-    var cards = getCards();
-    socket.emit('CardNewGameReceived', cards); // Send message to sender
-    socket.broadcast.emit('CardNewGameReceived', cards); // Send message to everyone BUT sender
+    newGame();
   });
   socket.on('CardCurrentGame', function (msg) {
     socket.emit('CardNewGameReceived', cardsArray); // Send message to sender
@@ -167,6 +171,11 @@ io.on('connection', function(socket){
       });
     }
   }
+  function newGame(){
+    var cards = getCards();
+    socket.emit('CardNewGameReceived', cards); // Send message to sender
+    socket.broadcast.emit('CardNewGameReceived', cards); // Send message to everyone BUT sender
+  }
 });
 
 
@@ -184,6 +193,7 @@ function putUserOffline(id){
 
 function getCards(){
   // if(!cardsArray){
+  cardsSelected = [];
   cardsArray = [
     { id: uuid.v1(), image: "1",  userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
     { id: uuid.v1(), image: "1",  userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
