@@ -17,8 +17,8 @@ export class ChatComponent implements OnInit {
   constructor(private messageService: SocketIoService, private userService: UserService) {
     this.user = userService.getCurrentUser();
     this.messageService.newMessage.subscribe( m => {
-        console.log(m);
         if (m != null) {
+          console.log(m);
           m.isLoading = false;
           this.messages.push(m);
         }

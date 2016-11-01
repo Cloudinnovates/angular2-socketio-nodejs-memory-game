@@ -26,5 +26,5 @@ export enum CardEvent {
   CardNewGameReceived,
   CardCurrentGame,
   CardClicked,
-  CardStatus,
+  CardStatus
 }

@@ -44,12 +44,12 @@ export class HomeComponent implements OnInit {
     this.jwt = localStorage.getItem('jwt');
     this.decodedJwt = this.jwt && this.jwtHelper.decodeToken(this.jwt);
   }
-
   logout() {
     localStorage.removeItem('jwt');
     this.user = null;
     this.jwt = localStorage.getItem('jwt');
     this.decodedJwt = this.jwt && this.jwtHelper.decodeToken(this.jwt);
+    this.messageService.disconectSocket();
   }
   newGame() {
     this.messageService.newGame();

@@ -67,7 +67,7 @@ export class SocketIoService {
     console.log('Hello SocketIoService', userService);
     userService.userSubject.subscribe(  m => {
         if (m != null) {
-        console.log("USER IS HERE");
+          console.log("USER IS HERE");
           this.connectSocket();
         }
       }, (e) => console.log(e)
@@ -78,25 +78,44 @@ export class SocketIoService {
     console.log('getJWT => ' + this.jwt);
     return this.jwt;
   }
+  disconectSocket(){
+    if(this.socket){
+      this.socket.disconnect();
+      this.socket = null;
+    }
+  }
   connectSocket(){
-    console.log(this.socket);
-    if(!this.socket){
+    console.log("CONNECT TO SOCKET",this.socket);
+      this.disconectSocket();
       this.socket = io.connect(this.baseUri, {query: 'token=' + this.getJWT()})
       this.socket.on('connect', () => {
+      /* --- DEFAULT LISTENERS ---------------------------------------------------------------------------------- --- */
         console.log('connected');
         this.currentGame();
       });
       this.socket.on('disconnect', () => {
         console.log('disconnected');
       });
-      /* --- CHAT LISTENERS --------------------------------------------------------------------------------------- --- */
+      this.socket.on('authenticated', function(socket) {
+        //this socket is authenticated, we are good to handle more events from it.
+        console.log('+++++++++++++++++++++++++++++++++++++++++++++');
+        console.log('authenticated!');
+        console.log('+++++++++++++++++++++++++++++++++++++++++++++');
+      });
+      this.socket.on("error", function(error) {
+        console.log("SOCKET ERROR HANDLER", error);
+        if (error.type == "UnauthorizedError" || error.code == "invalid_token") {
+          console.log("User's token has expired");
+        }
+      });
+      /* --- CHAT LISTENERS ------------------------------------------------------------------------------------- --- */
       this.socket.on(MessagingEvent[MessagingEvent.NewMessage], (msg) => {
         this.newMessage.next(new Message(JSON.parse(msg)));
       });
       this.socket.on(MessagingEvent[MessagingEvent.MessageReceived], (msgId) => {
         this.receivedMessage.next(msgId);
       });
-      /* --- CARD LISTENERS --------------------------------------------------------------------------------------- --- */
+      /* --- CARD LISTENERS ------------------------------------------------------------------------------------- --- */
       this.socket.on(CardEvent[CardEvent.CardStatus], (msg) => {
         this.statusCard.next(new Card(JSON.parse(msg)));
       });
@@ -108,7 +127,6 @@ export class SocketIoService {
         }
         this.newCardGame.next(aux);
       });
-    }
   }
 
 

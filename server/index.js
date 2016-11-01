@@ -1,3 +1,4 @@
+/* ### GLOBAL VARIALBES  ######################################################################################## ### */
 var express       = require('express');
 var app           = express();
 var http          = require('http').Server(app);
@@ -12,19 +13,18 @@ var config        = require('./config');
 var cardsArray    = null;
 var users         = [{id: uuid.v1(), username: 'Rene', isOnline: false}];
 var cardsSelected = [];
-// Public Assets
-// app.use(express.static(__dirname + '/public'));
 
-
-// app.get('/', function(req, res){
-//   res.sendFile(__dirname + '/templates/index.html');
-// });
-// app.get('/display', function(req, res){
-//   res.sendFile(__dirname + '/templates/display.html');
-// });
+/* ### GLOBAL CONFIG  ########################################################################################### ### */
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cors());
+
+/* ### SERVER  ################################################################################################## ### */
+// Public Assets
+// app.use(express.static(__dirname + '/public'));
+// app.get('/', function(req, res){
+//   res.sendFile(__dirname + '/templates/index.html');
+// });
 app.post('/user/create', function(req, res) {
   var userScheme = getUserScheme(req);
   if(userScheme.username === undefined){
@@ -46,31 +46,21 @@ app.post('/user/create', function(req, res) {
     username: userScheme.username
   });
 });
-
-
-
 http.listen(8888, function(){
   console.log('listening on *:8888');
-  getCards();
+  resetCards();
 });
-
-
-
-//// With socket.io < 1.0 ////
-// io.set('authorization', socketioJwt.authorize({
-//   secret: config.secret,
-//   handshake: true
-// }));
-//////////////////////////////
-//// With socket.io >= 1.0 ////
+/* ### SOCKET IO ################################################################################################ ### */
+/* --- SOCKET IO JWT TOKEN LISTENER SETTINGS -------------------------------------------------------------------- --- */
 io.use(socketioJwt.authorize({
   secret: config.secret,
   handshake: true
 }));
-///////////////////////////////
+/* --- SOCKET IO LISTENERS -------------------------------------------------------------------------------------- --- */
 io.on('connection', function(socket){
-  console.log('connected');
-  console.log('socket.io connection established');
+  console.log('------------------------------------------------------------------------------------------------------');
+  console.log('| socket.io connection established                                                                   |');
+  console.log('------------------------------------------------------------------------------------------------------');
   var user = socket.decoded_token;
   console.log(user);
   socket.userid = user.id;
@@ -82,9 +72,7 @@ io.on('connection', function(socket){
     users.push({ id: user.id, username: user.username, isOnline: true });
   }
 
-  socket.on('message', function(msg){
-    io.emit('color', msg);
-  });
+  /* --- CHAT MESSAGES LISTENERS -------------------------------------------------------------------------------- --- */
   socket.on('SendMessage', function (msg) {
     console.log('noticed new message');
     console.log(msg);
@@ -92,18 +80,19 @@ io.on('connection', function(socket){
     socket.emit('MessageReceived', parsedMsg.id); // Send message to sender
     socket.broadcast.emit('NewMessage', msg); // Send message to everyone BUT sender
   });
+
+  /* --- GAME LISTENERS ----------------------------------------------------------------------------------------- --- */
   socket.on('CardClicked', function (msg) {
     console.log('noticed new card click');
-    console.log(msg);
     var parsedMsg = JSON.parse(msg);
     var card = _.find(cardsArray, ['id', parsedMsg.id]);
     var user = _.find(users, ['id', parsedMsg.userId]);
     var playerSelectedCards = cardsSelected[user.id];
-    console.log(card);
     if(playerSelectedCards === undefined){
       playerSelectedCards = [];
       cardsSelected[user.id] = playerSelectedCards;
     }
+
     console.log(card);
     if(card.state === false && playerSelectedCards.length<2){
       card.state = true;
@@ -111,7 +100,6 @@ io.on('connection', function(socket){
       card.username = user.username;
       socket.emit('CardStatus', JSON.stringify(card)); // Send message to sender
       socket.broadcast.emit('CardStatus', JSON.stringify(card)); // Send message to everyone BUT sender
-
       playerSelectedCards.push(card);
       if(playerSelectedCards.length>=2){
         var cardOne = playerSelectedCards.pop();
@@ -123,7 +111,6 @@ io.on('connection', function(socket){
           cardTwo.userId = null;
           cardOne.username = null;
           cardTwo.username = null;
-
         }else{
           cardOne.lock = true;
           cardTwo.lock = true;
@@ -150,18 +137,23 @@ io.on('connection', function(socket){
   socket.on('CardCurrentGame', function (msg) {
     socket.emit('CardNewGameReceived', cardsArray); // Send message to sender
   });
+  /* --- DEFAULT LISTENERS -------------------------------------------------------------------------------------- --- */
   socket.on('Logout', function (msg) {
     console.log('noticed Logout');
     var parsedMsg = JSON.parse(msg);
     notifyLogout(putUserOffline(parsedMsg.id));
   });
-  // when the user disconnects.. perform this
   socket.on('disconnect', function () {
     console.log('noticed disconnect');
     console.log(socket.userid );
     notifyLogout(putUserOffline(socket.userid));
   });
 
+  /* --- SOCKET IO GLOBAL FUNCTIONS  ---------------------------------------------------------------------------- --- */
+  /**
+   * Emit broatcast that user left the chat
+   * @param userFound
+   */
   function notifyLogout(userFound){
     if(userFound !== false){
       // echo globally that this client has left
@@ -171,17 +163,26 @@ io.on('connection', function(socket){
       });
     }
   }
+
+  /**
+   * * Emit broatcast New Game has been created
+   */
   function newGame(){
-    var cards = getCards();
+    var cards = resetCards();
     socket.emit('CardNewGameReceived', cards); // Send message to sender
     socket.broadcast.emit('CardNewGameReceived', cards); // Send message to everyone BUT sender
   }
 });
 
-
+/* ### GLOBAL FUNCTIONS  ######################################################################################## ### */
+/**
+ * Puts user with status offline
+ * @param id string
+ * @returns {boolean || User}
+ */
 function putUserOffline(id){
   var userFound = _.find(users, ['id',id]);
-  console.log("PutUserOffLine");
+  console.log("PutUserOffline");
   if(userFound !== undefined &&  userFound !== -1 ){
     userFound.isOnline = false;
     console.log(userFound);
@@ -190,9 +191,11 @@ function putUserOffline(id){
   console.log(userFound);
   return false;
 }
-
-function getCards(){
-  // if(!cardsArray){
+/**
+ * Resets cards array and clears the selected card from user array
+ * @returns array
+ */
+function resetCards(){
   cardsSelected = [];
   cardsArray = [
     { id: uuid.v1(), image: "1",  userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
@@ -220,17 +223,25 @@ function getCards(){
     { id: uuid.v1(), image: "12", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
     { id: uuid.v1(), image: "12", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
   ];
-  // }
   cardsArray = _.shuffle(cardsArray);
   return cardsArray;
 }
-
+/**
+ * Creates JWT Token for user to use as a validation entry token
+ *
+ * @param user
+ * @returns string
+ */
 function createToken(user) {
   return jwt.sign(user, config.secret, { expiresIn: "10h" });
+  // return jwt.sign(user, config.secret, { expiresIn: 10 });
 }
-
+/**
+ *
+ * @param req request
+ * @returns {{username: *, type: *, userSearch: {}}}
+ */
 function getUserScheme(req) {
-
   var username;
   var type;
   var userSearch = {};
@@ -240,7 +251,6 @@ function getUserScheme(req) {
     type = 'username';
     userSearch = { username: username };
   }
-
   return {
     username: username,
     type: type,
