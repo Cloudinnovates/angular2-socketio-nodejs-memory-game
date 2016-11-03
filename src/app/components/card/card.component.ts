@@ -14,7 +14,7 @@ export class CardComponent implements OnInit {
   constructor(private messageService: SocketIoService, private userService: UserService ) {
     this.user = userService.getCurrentUser();
     this.messageService.statusCard.subscribe( m => {
-        if (m && this.item && m.id == this.item.id) {
+        if (m && this.item && m.id === this.item.id) {
           console.log(m);
           this.item = m ;
         }
@@ -25,7 +25,7 @@ export class CardComponent implements OnInit {
     console.log('Hello Card');
   }
   getFlip($event) {
-    if(this.item.state === false){
+    if (this.item.state === false) {
       this.item.userId = this.user.id;
       this.messageService.sendCard(this.item);
     }

@@ -18,7 +18,7 @@ export class LoginComponent {
         this.onLogin.emit(user);
       },
       (a) => {
-        console.log("SOMETHING GONE WRONG", a);
+        console.log('SOMETHING GONE WRONG', a);
       });
   }
 }

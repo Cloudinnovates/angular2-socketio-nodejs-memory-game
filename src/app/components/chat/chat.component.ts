@@ -1,8 +1,8 @@
-import {Component, OnInit, Input, ViewChild, ElementRef, EventEmitter} from '@angular/core';
-import { SocketIoService , UserService} from '../../providers';
-import {Message} from '../../models/message';
-import {NgClass} from "@angular/common";
-import {User} from "../../models/user";
+import { Component, OnInit, ViewChild, ElementRef, EventEmitter, Input, Output }  from '@angular/core';
+import { SocketIoService , UserService }                                          from '../../providers';
+import { Message }                                                                from '../../models/message';
+import { User }                                                                   from '../../models/user';
+
 @Component({
   selector: 'my-chat',
   templateUrl: './chat.component.html',
@@ -25,7 +25,6 @@ export class ChatComponent implements OnInit {
       }, (e) => console.log(e)
     );
   }
-
   ngOnInit() {
     console.log('Hello Chat');
   }
@@ -61,27 +60,21 @@ export class ChatComponent implements OnInit {
 @Component({
   selector: 'my-message-row',
   styleUrls: ['./message-row.component.scss'],
-  templateUrl: './message-row.component.html',
-  inputs: [
-    'message'
-  ],
-  outputs: [
-    'change'
-  ]
+  templateUrl: './message-row.component.html'
 })
 export class MessageRowComponent {
+  @Input() message: Message;
+  @Output() change = new EventEmitter<any>();
   messageMode: number;
-  change = new EventEmitter<any>();
-  message: Message;
   timeAgo: string;
   user: User;
   constructor(private messageService: SocketIoService, private userService: UserService) {
     this.messageService.receivedMessage
       .delay(1000).subscribe(msgId => {
-        if (this.message.id === msgId) {
-          this.message.isLoading = false;
-        }
-      });
+      if (this.message.id === msgId) {
+        this.message.isLoading = false;
+      }
+    });
   }
   ngOnInit() {
     this.messageMode = this.userService.getCurrentUser().username === this.message.username ? 1 : 0;
@@ -95,9 +88,9 @@ export class MessageRowComponent {
     let diffMs = Math.abs(new Date(messageTime.toString()).getTime() - today.getTime()); // milliseconds between now & Christmas
     let diffDays = Math.round(diffMs / 86400000); // days
     if (diffDays >= 7) {
-      var weekCount = Math.floor(diffDays / 7);
+      let weekCount = Math.floor(diffDays / 7);
       if (weekCount >= 4) {
-        var monthCount = Math.floor(weekCount / 4);
+        let monthCount = Math.floor(weekCount / 4);
         if (monthCount === 1) {
           return '1 month ago';
         } else {
@@ -113,19 +106,19 @@ export class MessageRowComponent {
     } else if (diffDays === 1) {
       return '1 day ago';
     } else {
-      var diffHrs = Math.round((diffMs % 86400000) / 3600000); // hours
+      let diffHrs = Math.round((diffMs % 86400000) / 3600000); // hours
       if (diffHrs > 1) {
         return diffHrs + 'hours ago';
       } else if (diffHrs === 1) {
         return '1 hour ago';
       } else {
-        var diffMins = Math.round(((diffMs % 86400000) % 3600000) / 60000); // minutes
+        let diffMins = Math.round(((diffMs % 86400000) % 3600000) / 60000); // minutes
         if (diffMins > 1) {
           return diffMins + ' minutes ago';
         } else if (diffMins === 1) {
           return '1 minute ago';
         } else {
-          var diffSeconds = Math.round(diffMs / 1000);
+          let diffSeconds = Math.round(diffMs / 1000);
           if (diffMins >= 3) {
             return diffSeconds + ' seconds ago';
           } else {

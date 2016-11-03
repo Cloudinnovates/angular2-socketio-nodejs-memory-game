@@ -11,5 +11,5 @@ import '@angularclass/hmr';
 // Other vendors for example jQuery, Lodash or Bootstrap
 // You can import js, ts, css, sass, ...
 import 'bootstrap-sass/assets/javascripts/bootstrap.min.js';
-import 'socket.io-client/socket.io.js';
-import 'angular2-uuid';
+// import 'socket.io-client/socket.io.js';
+// import 'angular2-uuid';

@@ -16,11 +16,32 @@ $ cd game
 
 # install the dependencies with npm
 $ npm install
+```
 
-# start the server
+# Development mode
+
+### start Angular webpack
+
+```bash
 $ npm start
 ```
+
 go to [http://localhost:8080](http://localhost:8080) in your browser.
+
+### start nodejs webpack
+
+```bash
+$ node server/index.js
+```
+
+# Production mode
+
+```bash
+$ node server/index.js
+```
+
+go to [http://localhost:8889](http://localhost:8889) in your browser.
+
 
 # License
 

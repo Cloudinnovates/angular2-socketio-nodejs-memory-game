@@ -21,10 +21,10 @@ app.use(cors());
 
 /* ### SERVER  ################################################################################################## ### */
 // Public Assets
-// app.use(express.static(__dirname + '/public'));
-// app.get('/', function(req, res){
-//   res.sendFile(__dirname + '/templates/index.html');
-// });
+app.use(express.static(__dirname + '/../dist'));
+app.get('/', function(req, res){
+  res.sendFile(__dirname + '/../dist/index.html');
+});
 app.post('/user/create', function(req, res) {
   var userScheme = getUserScheme(req);
   if(userScheme.username === undefined){
@@ -46,8 +46,8 @@ app.post('/user/create', function(req, res) {
     username: userScheme.username
   });
 });
-http.listen(8888, function(){
-  console.log('listening on *:8888');
+http.listen(8889, function(){
+  console.log('listening on *:8889');
   resetCards();
 });
 /* ### SOCKET IO ################################################################################################ ### */

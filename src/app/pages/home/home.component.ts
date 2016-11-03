@@ -21,14 +21,13 @@ export class HomeComponent implements OnInit {
               public jwtHelper: JwtHelper,
               private userService: UserService
   ) {
-
     this.jwt = localStorage.getItem('jwt');
     this.decodedJwt = this.jwt && this.jwtHelper.decodeToken(this.jwt);
     this.user = this.userService.getCurrentUser();
     console.log('USER: ' + this.user);
     this.messageService.newCardGame.subscribe( m => {
-        if(m){
-        console.log(m);
+        if ( m ) {
+          console.log(m);
           this.cards = m;
         }
       }, (e) => console.log(e)

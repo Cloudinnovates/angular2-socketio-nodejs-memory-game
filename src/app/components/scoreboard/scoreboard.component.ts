@@ -1,6 +1,6 @@
-import {Component, OnInit, Input, ViewChild, ElementRef, EventEmitter} from '@angular/core';
-import { SocketIoService , UserService} from '../../providers';
-import {User} from "../../models/user";
+import { Component, OnInit, Input }       from '@angular/core';
+import { SocketIoService , UserService }  from '../../providers';
+import { User }                           from '../../models/user';
 @Component({
   selector: 'my-scoreboard',
   templateUrl: './scoreboard.component.html',
@@ -21,11 +21,15 @@ export class ScoreboardComponent implements OnInit {
     this.messageService.receivedSingleUser.subscribe(m => {
       if (m != null) {
         console.log(m);
-        var found: boolean = false;
-        for( let u: User of this.users ){
-          if(u.id = m.id) found = true;
+        let found = false;
+        for ( let u of this.users ){
+          if (u.id === m.id) {
+            found = true;
+          }
         }
-        if(!found) this.users.push(m);
+        if (!found) {
+          this.users.push(m);
+        }
       }
     });
   }
@@ -44,7 +48,7 @@ export class UserRowComponent {
   constructor(private messageService: SocketIoService) {
     this.messageService.receivedSingleUser.subscribe(m => {
       if (m != null && this.user != null) {
-        if (this.user.id == m.id) {
+        if (this.user.id === m.id) {
           this.user = m;
         }
       }
