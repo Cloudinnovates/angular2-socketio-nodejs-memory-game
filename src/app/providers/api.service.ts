@@ -1,21 +1,21 @@
-import { Injectable } from '@angular/core';
-import * as io from 'socket.io-client';
-import { Http } from '@angular/http';
-import {JwtHelper} from 'angular2-jwt';
-import {contentHeaders} from '../utils/headers';
-import {Subject, BehaviorSubject, Observable, ConnectableObservable, ReplaySubject} from 'rxjs';
-import {Message, MessagingEvent} from '../models/message';
-import {Card, CardEvent} from '../models/card';
-import {User} from '../models/user';
+import { Injectable }                 from '@angular/core';
+import * as io                        from 'socket.io-client';
+import { Http }                       from '@angular/http';
+import { JwtHelper }                  from 'angular2-jwt';
+import { contentHeaders }             from '../utils/headers';
+import { Subject, BehaviorSubject }   from 'rxjs';
+import { Message, MessagingEvent }    from '../models/message';
+import { Card, CardEvent }            from '../models/card';
+import { User, UserEvent }            from '../models/user';
 import 'rxjs/add/operator/map';
 
 @Injectable()
 export class UserService {
-  private baseUri = 'http://fersz.dlinkddns.com:8888';
-  private loginUrl =  this.baseUri + '/user/create';
+  private baseUri                     = 'http://fersz.dlinkddns.com:8888';
+  private loginUrl                    = this.baseUri + '/user/create';
+  public userSubject: Subject<User>   = new BehaviorSubject<User>(null);
+  public authError: Subject<string>   = new BehaviorSubject<string>(null);
   private currentUser: User;
-  public userSubject: Subject<User> = new BehaviorSubject<User>(null);
-  public authError: Subject<string> = new BehaviorSubject<string>(null);
   constructor(private http: Http, private jwtHelper: JwtHelper) {
   }
   login(username: string): Promise<User> {
@@ -54,17 +54,20 @@ export class UserService {
 @Injectable()
 export class SocketIoService {
   private jwt;
-  private baseUri = 'http://fersz.dlinkddns.com:8888';
+  private baseUri                   = 'http://fersz.dlinkddns.com:8888';
   private socket;
   /* --- CHAT SUBJECTS ------------------------------------------------------------------------------------------ --- */
-  newMessage: Subject<Message> = new BehaviorSubject<Message>(null);
-  receivedMessage: Subject<string> = new Subject<string>();
+  newMessage: Subject<Message>      = new BehaviorSubject<Message>(null);
+  receivedMessage: Subject<string>  = new Subject<string>();
   /* --- CARD SUBJECTS ------------------------------------------------------------------------------------------ --- */
-  statusCard: Subject<Card> = new BehaviorSubject<Card>(null);
-  newCardGame: Subject<Card[]> = new BehaviorSubject<Card[]>(null);
+  statusCard: Subject<Card>         = new BehaviorSubject<Card>(null);
+  newCardGame: Subject<Card[]>      = new BehaviorSubject<Card[]>(null);
+  /* --- USER SUBJECTS ------------------------------------------------------------------------------------------ --- */
+  receivedSingleUser: Subject<User> = new BehaviorSubject<User>(null);
+  receivedAllUser: Subject<User[]>  = new BehaviorSubject<User[]>(null);
 
   constructor(private userService: UserService) {
-    console.log('Hello SocketIoService', userService);
+    console.log('Hello SocketIoService');
     userService.userSubject.subscribe(  m => {
         if (m != null) {
           console.log("USER IS HERE");
@@ -85,7 +88,7 @@ export class SocketIoService {
     }
   }
   connectSocket(){
-    console.log("CONNECT TO SOCKET",this.socket);
+    console.log("CONNECT TO SOCKET");
       this.disconectSocket();
       this.socket = io.connect(this.baseUri, {query: 'token=' + this.getJWT()})
       this.socket.on('connect', () => {
@@ -96,17 +99,22 @@ export class SocketIoService {
       this.socket.on('disconnect', () => {
         console.log('disconnected');
       });
-      this.socket.on('authenticated', function(socket) {
-        //this socket is authenticated, we are good to handle more events from it.
-        console.log('+++++++++++++++++++++++++++++++++++++++++++++');
-        console.log('authenticated!');
-        console.log('+++++++++++++++++++++++++++++++++++++++++++++');
-      });
       this.socket.on("error", function(error) {
         console.log("SOCKET ERROR HANDLER", error);
         if (error.type == "UnauthorizedError" || error.code == "invalid_token") {
           console.log("User's token has expired");
         }
+      });
+      /* --- USERS LISTENERS ------------------------------------------------------------------------------------ --- */
+      this.socket.on(UserEvent[UserEvent.UserSingle], (msg) => {
+        this.receivedSingleUser.next(new User(msg));
+      });
+      this.socket.on(UserEvent[UserEvent.UserAll], (msg) => {
+        var aux : User[] = [];
+        for (var user of msg){
+          aux.push(new User(user));
+        }
+        this.receivedAllUser.next(aux);
       });
       /* --- CHAT LISTENERS ------------------------------------------------------------------------------------- --- */
       this.socket.on(MessagingEvent[MessagingEvent.NewMessage], (msg) => {
@@ -122,14 +130,11 @@ export class SocketIoService {
       this.socket.on(CardEvent[CardEvent.CardNewGameReceived], (msg) => {
         var aux : Card[] = [];
         for (var card of msg){
-          console.log(card);
           aux.push(new Card(card));
         }
         this.newCardGame.next(aux);
       });
   }
-
-
   sendMessage(message: Message): void {
     let msg = JSON.stringify(message);
     this.socket.emit(MessagingEvent[MessagingEvent.SendMessage], msg);

@@ -11,3 +11,7 @@ export class User {
     this.score    =   obj && obj.score    || 0;
   }
 }
+export enum UserEvent {
+  UserAll,
+  UserSingle
+}

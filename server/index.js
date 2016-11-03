@@ -1,17 +1,17 @@
 /* ### GLOBAL VARIALBES  ######################################################################################## ### */
-var express       = require('express');
-var app           = express();
-var http          = require('http').Server(app);
-var io            = require('socket.io')(http);
-var socketioJwt   = require('socketio-jwt');
+var express       = require('express');               // express framework
+var app           = express();                        // instance of express
+var http          = require('http').Server(app);      // http functions attaching express
+var io            = require('socket.io')(http);       // instance socketio
+var socketioJwt   = require('socketio-jwt');          // jwt functions
 var _             = require('lodash');                // Awesome tool - multi use tool form variables
-var jwt           = require('jsonwebtoken');
+var jwt           = require('jsonwebtoken');          // get jwt from request functions
 var cors          = require('cors');                  // Allow request from other websites
 var bodyParser    = require('body-parser');           // Parse variables passed into req.body as an object
-var uuid          = require('node-uuid');
-var config        = require('./config');
+var uuid          = require('node-uuid');             // Unique id generator.
+var config        = require('./config');              // my config file
 var cardsArray    = null;
-var users         = [{id: uuid.v1(), username: 'Rene', isOnline: false}];
+var users         = [{ id: uuid.v1(), username: 'Rene', isOnline: false, score: 500 }];
 var cardsSelected = [];
 
 /* ### GLOBAL CONFIG  ########################################################################################### ### */
@@ -62,16 +62,24 @@ io.on('connection', function(socket){
   console.log('| socket.io connection established                                                                   |');
   console.log('------------------------------------------------------------------------------------------------------');
   var user = socket.decoded_token;
-  console.log(user);
   socket.userid = user.id;
   socket.username = user.username;
   socket.emit('login', {numUsers: 1});
-  socket.broadcast.emit('UserJoined', {username: socket.username, numUsers: 1});
   var userFromMemory = _.find(users, ['id', user.id]);
   if(userFromMemory === undefined){
-    users.push({ id: user.id, username: user.username, isOnline: true });
+    userFromMemory = { id: user.id, username: user.username, isOnline: true, score: 0 };
+    users.push(userFromMemory);
+  }else{
+    userFromMemory.isOnline = true;
   }
-
+  console.log(userFromMemory);
+  socket.emit('UserAll', users);
+  // sendPlayer(userFromMemory);
+  /* --- USER SCORE LISTENERS ----------------------------------------------------------------------------------- --- */
+  function sendPlayer(user){
+    socket.emit('UsersSingle', JSON.stringify(user));
+    socket.broadcast.emit('UserSingle', JSON.stringify(user)); // Send message to everyone BUT sender
+  }
   /* --- CHAT MESSAGES LISTENERS -------------------------------------------------------------------------------- --- */
   socket.on('SendMessage', function (msg) {
     console.log('noticed new message');
@@ -92,7 +100,6 @@ io.on('connection', function(socket){
       playerSelectedCards = [];
       cardsSelected[user.id] = playerSelectedCards;
     }
-
     console.log(card);
     if(card.state === false && playerSelectedCards.length<2){
       card.state = true;
@@ -114,6 +121,8 @@ io.on('connection', function(socket){
         }else{
           cardOne.lock = true;
           cardTwo.lock = true;
+          user.score = user.score*1+10;
+          sendPlayer(user);
         }
         setTimeout(function(){
           socket.emit('CardStatus', JSON.stringify(cardOne)); // Send message to sender
@@ -150,6 +159,11 @@ io.on('connection', function(socket){
   });
 
   /* --- SOCKET IO GLOBAL FUNCTIONS  ---------------------------------------------------------------------------- --- */
+  function sendAllUserSortedByScore(){
+
+  }
+
+
   /**
    * Emit broatcast that user left the chat
    * @param userFound
@@ -163,7 +177,6 @@ io.on('connection', function(socket){
       });
     }
   }
-
   /**
    * * Emit broatcast New Game has been created
    */

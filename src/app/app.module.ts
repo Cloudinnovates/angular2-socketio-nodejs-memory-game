@@ -1,19 +1,20 @@
-import { NgModule, ApplicationRef }           from '@angular/core';
-import { BrowserModule }                      from '@angular/platform-browser';
-import { HttpModule, Http }                   from '@angular/http';
-import { FormsModule }                        from '@angular/forms';
-import { AppComponent }                       from './app.component';
+import { NgModule, ApplicationRef }               from '@angular/core';
+import { BrowserModule }                          from '@angular/platform-browser';
+import { HttpModule, Http }                       from '@angular/http';
+import { FormsModule }                            from '@angular/forms';
+import { AppComponent }                           from './app.component';
 // PAGES ---------------------------------------------------------------------------------------------------------------
-import { HomeComponent }                      from './pages/home/home.component';
-import { LoginComponent }                     from './pages/authentication/login.component';
+import { HomeComponent }                          from './pages/home/home.component';
+import { LoginComponent }                         from './pages/authentication/login.component';
 // COMPONENTS ----------------------------------------------------------------------------------------------------------
-import { ChatComponent , MessageRowComponent} from './components/chat/chat.component';
-import { CardComponent }                      from './components/card/card.component';
+import { ScoreboardComponent, UserRowComponent }  from './components/scoreboard/scoreboard.component';
+import { ChatComponent, MessageRowComponent}      from './components/chat/chat.component';
+import { CardComponent }                          from './components/card/card.component';
 // PROVIDERS -----------------------------------------------------------------------------------------------------------
-import { AuthHttp, AuthConfig, JwtHelper }    from 'angular2-jwt';
-import { SocketIoService, UserService }        from './providers';
-import { routing }                            from './app.routing';
-import { removeNgStyles, createNewHosts }     from '@angularclass/hmr';
+import { AuthHttp, AuthConfig, JwtHelper }        from 'angular2-jwt';
+import { SocketIoService, UserService }           from './providers';
+import { routing }                                from './app.routing';
+import { removeNgStyles, createNewHosts }         from '@angularclass/hmr';
 
 @NgModule({
   imports: [
@@ -27,6 +28,8 @@ import { removeNgStyles, createNewHosts }     from '@angularclass/hmr';
     HomeComponent,
     LoginComponent,
     CardComponent,
+    ScoreboardComponent,
+    UserRowComponent,
     ChatComponent,
     MessageRowComponent
   ],

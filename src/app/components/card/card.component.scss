@@ -20,18 +20,29 @@
   .back {
     background: lighten(#303641,50%);
     transform: rotateY( 180deg );
-    display: flex;
-    justify-content:  center;
-    align-content:    center;
+    //display: flex;
+    //justify-content:  center;
+    //align-content:    center;
+    //flex-direction: column;
     padding: 20px;
     position: relative;
+    overflow: hidden;
+    //width: 100%;
+    &.user{
+      background: red;
+      &.locked{
+        background: lighten(red,20%);
+
+      }
+    }
     img{
       pointer-events: none;
     }
     span{
       position: absolute;
       bottom: 0;
-
+      left: 0;
+      right: 0;
     }
 
   }

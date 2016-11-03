@@ -25,8 +25,10 @@ export class CardComponent implements OnInit {
     console.log('Hello Card');
   }
   getFlip($event) {
-    this.item.userId = this.user.id;
-    this.messageService.sendCard(this.item);
+    if(this.item.state === false){
+      this.item.userId = this.user.id;
+      this.messageService.sendCard(this.item);
+    }
   }
 
 }

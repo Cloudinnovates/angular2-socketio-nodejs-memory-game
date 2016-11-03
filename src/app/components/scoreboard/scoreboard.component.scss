@@ -1,0 +1,9 @@
+// component styles are encapsulated and only applied to their components
+#page-content-wrapper {
+  background-color: transparent;
+  flex-direction: column;
+  position: relative;
+}
+my-user-row{
+  width: 100%;
+}
