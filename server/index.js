@@ -122,7 +122,7 @@ io.on('connection', function(socket){
           cardOne.lock = true;
           cardTwo.lock = true;
           user.score = user.score*1+10;
-          sendPlayer(user);
+          // sendPlayer(user);
         }
         setTimeout(function(){
           socket.emit('CardStatus', JSON.stringify(cardOne)); // Send message to sender
