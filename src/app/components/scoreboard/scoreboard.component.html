@@ -5,5 +5,8 @@
           <my-user-row [user]="user" *ngFor="let user of users; let idx = index"></my-user-row>
       </div>
     </div>
+    <div class="pane-footer text-center ">
+      <a class="btn btn-primary btn-lg" role="button" (click)="logout()">Logout</a>
+    </div>
   </div>
   <!-- /#page-content-wrapper -->

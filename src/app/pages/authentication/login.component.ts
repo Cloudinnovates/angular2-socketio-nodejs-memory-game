@@ -1,14 +1,15 @@
-import {Component, Output, EventEmitter} from '@angular/core';
+import {Component, Output, EventEmitter, ViewChild} from '@angular/core';
 
 import {User} from '../../models/user';
 import {UserService} from '../../providers';
-
+declare var $:any;
 @Component({
   selector: 'my-login',
   templateUrl: './login.component.html'
 })
 export class LoginComponent {
   @Output() onLogin = new EventEmitter<User>();
+  @ViewChild('username') usernameInput;
   constructor(private userService: UserService) {
 
   }
@@ -20,5 +21,10 @@ export class LoginComponent {
       (a) => {
         console.log('SOMETHING GONE WRONG', a);
       });
+  }
+
+  ngAfterViewInit(){
+    console.log('Login Init');
+    // $(this.usernameInput.nativeElement).val('gasd');
   }
 }

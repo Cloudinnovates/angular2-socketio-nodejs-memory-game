@@ -1,10 +1,15 @@
-<div class="login jumbotron center-block">
+<div class="container-fluid">
+  <div class="login jumbotron center-block">
+    <br>
+    <br>
     <h1>Login</h1>
-    <form role="form" (submit)="login($event, username.value)">
-        <div class="form-group">
-            <label for="username">Username</label>
-            <input type="text" #username class="form-control" id="username" placeholder="Username">
-        </div>
-        <button type="submit" class="btn btn-default">Submit</button>
+    <form role="form" (submit)="login($event, username.value)" class="effect2" style="transform: translateX(0%);">
+      <div class="">
+        <input type="text" #username id="username" placeholder="type a username" class="input-white">
+      </div>
+      <div class="text-center">
+        <button type="submit" class="btn btn-default btn-game">Enter</button>
+      </div>
     </form>
+  </div>
 </div>

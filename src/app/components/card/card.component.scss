@@ -16,6 +16,14 @@
   }
   .front {
     background: lighten(#303641,20%);
+    display: flex;
+    justify-content:  center;
+    align-content:    center;
+    div{
+      margin: auto;
+      font-family: 'Bungee', cursive;
+      font-size: 2em;
+    }
   }
   .back {
     background: lighten(#303641,50%);
@@ -29,9 +37,9 @@
     overflow: hidden;
     //width: 100%;
     &.user{
-      background: red;
+      background: #2dcb89;
       &.locked{
-        background: lighten(red,20%);
+        background: lighten(#2dcb89,20%);
 
       }
     }

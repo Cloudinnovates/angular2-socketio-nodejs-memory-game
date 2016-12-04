@@ -1,0 +1,19 @@
+input[type="text"].input-white{
+  font-size: 2em;
+  background: transparent;
+  border: none;
+  border-bottom: white 1px solid;
+  color: white;
+  transition: all 0.4s ease;
+  &:focus{
+    outline: none;
+    border-bottom: #df6659 1px solid;
+  }
+}
+.btn{
+  border-radius: 0;
+  transition: all 0.2s ease;
+  &.btn-game{
+
+  }
+}

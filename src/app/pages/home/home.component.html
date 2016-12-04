@@ -1,23 +1,26 @@
 <div class="wrapper">
   <main>
     <div *ngIf="this.user" class="the-game">
-      <div class="container-fluid">
-        <p><a class="btn btn-default btn-lg" role="button" (click)="newGame()">New Game</a> <a class="btn btn-primary btn-lg" role="button" (click)="logout()">Logout</a></p>
-        <h2 *ngIf="jwt">Your JWT is:</h2>
-        <pre *ngIf="jwt" class="jwt"><code>{{ jwt }}</code></pre>
-        <pre *ngIf="jwt" class="jwt"><code>{{ decodedJwt | json }}</code></pre>
-      </div>
-      <my-card  *ngFor="let card of cards" [item]="card"></my-card>
+      <my-card  *ngFor="let card of cards; let i = index;" [item]="card" [itemNumber]="i+1" ></my-card>
     </div>
     <div *ngIf="!this.user" class="the-intro">
-      <h1>Intro</h1>
+      <br>
+      <br>
+      <br>
+      <br>
+      <h4 class="text-center">collaborative - no turn based </h4>
+      <h1 class="text-center">Memory Game</h1>
+      <h4 class="text-center">its never been more challenging </h4>
+      <div class="demo demo-one">
+        <my-card  *ngFor="let card of cardsDemo; let i = index;" [item]="card" [itemNumber]="i+1" [itemDemo]="true" ></my-card>
+      </div>
     </div>
   </main>
   <aside class="pane">
     <div *ngIf="this.user" class="game-information">
       <div class="tabs-list">
-        <a href="#chat" aria-controls="chat" role="tab" data-toggle="tab">chat</a>
-        <a href="#scoreboard" aria-controls="scoreboard" role="tab" data-toggle="tab">scoreboard</a>
+        <a href="#scoreboard" aria-controls="scoreboard" role="tab" data-toggle="tab" class="game-tab" [class.active]="this.tabSelected == 0" (click)="tabClick(0)">scoreboard</a>
+        <a href="#chat" aria-controls="chat" role="tab" data-toggle="tab" class="game-tab" [class.active]="this.tabSelected == 1" (click)="tabClick(1)">chat</a>
       </div>
       <div class="tab-content pane">
         <div role="tabpanel" class="tab-pane active" id="chat">

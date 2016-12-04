@@ -10,13 +10,20 @@ import {User} from '../../models/user';
 })
 export class HomeComponent implements OnInit {
   cards: Card[] = [];
-
+  cardsDemo: Card[] = [
+    new Card({id: 1, image: 1}),
+    new Card({id: 5, image: 3}),
+    new Card({id: 2, image: 1}),
+    new Card({id: 3, image: 2}),
+    new Card({id: 6, image: 3}),
+    new Card({id: 4, image: 2})
+  ];
+  tabSelected = 1;
   jwt: string;
   decodedJwt: any;
   response: string;
   api: string;
   user: User;
-
   constructor(private messageService: SocketIoService,
               public jwtHelper: JwtHelper,
               private userService: UserService
@@ -25,10 +32,15 @@ export class HomeComponent implements OnInit {
     this.decodedJwt = this.jwt && this.jwtHelper.decodeToken(this.jwt);
     this.user = this.userService.getCurrentUser();
     console.log('USER: ' + this.user);
+    this.messageService.authorizationExpired.subscribe( m => {
+        if ( m ) {
+          this.logout();
+        }
+    });
     this.messageService.newCardGame.subscribe( m => {
         if ( m ) {
-          console.log(m);
           this.cards = m;
+          console.log(this.cards);
         }
       }, (e) => console.log(e)
     );
@@ -52,5 +64,8 @@ export class HomeComponent implements OnInit {
   }
   newGame() {
     this.messageService.newGame();
+  }
+  tabClick(selectedTab){
+    this.tabSelected = selectedTab;
   }
 }

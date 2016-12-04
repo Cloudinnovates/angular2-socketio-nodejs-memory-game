@@ -11,11 +11,13 @@ export class CardComponent implements OnInit {
   flip: boolean = false;
   private user: User;
   @Input() item: Card;
+  @Input() itemNumber: number;
+  @Input() itemDemo: boolean = false;
   constructor(private messageService: SocketIoService, private userService: UserService ) {
-    this.user = userService.getCurrentUser();
+    console.log(this.item);
+
     this.messageService.statusCard.subscribe( m => {
         if (m && this.item && m.id === this.item.id) {
-          console.log(m);
           this.item = m ;
         }
       }, (e) => console.log(e)
@@ -23,11 +25,18 @@ export class CardComponent implements OnInit {
   }
   ngOnInit() {
     console.log('Hello Card');
+    if(this.itemDemo === true){
+      this.user = new User({id:1, username: "the demo guy"})
+    }else{
+      this.user = this.userService.getCurrentUser();
+    }
   }
   getFlip($event) {
-    if (this.item.state === false) {
+    if (this.item.state === false && this.itemDemo === false) {
       this.item.userId = this.user.id;
       this.messageService.sendCard(this.item);
+    }else{
+      this.item.state = !this.item.state;
     }
   }
 

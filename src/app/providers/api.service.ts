@@ -58,6 +58,8 @@ export class SocketIoService {
   private baseUri                   = 'http://localhost:8889';
   private socket;
   /* --- CHAT SUBJECTS ------------------------------------------------------------------------------------------ --- */
+  authorizationExpired: Subject<string>  = new BehaviorSubject<string>(null);
+  /* --- CHAT SUBJECTS ------------------------------------------------------------------------------------------ --- */
   newMessage: Subject<Message>      = new BehaviorSubject<Message>(null);
   receivedMessage: Subject<string>  = new Subject<string>();
   /* --- CARD SUBJECTS ------------------------------------------------------------------------------------------ --- */
@@ -66,7 +68,6 @@ export class SocketIoService {
   /* --- USER SUBJECTS ------------------------------------------------------------------------------------------ --- */
   receivedSingleUser: Subject<User> = new BehaviorSubject<User>(null);
   receivedAllUser: Subject<User[]>  = new BehaviorSubject<User[]>(null);
-
   constructor(private userService: UserService) {
     console.log('Hello SocketIoService');
     userService.userSubject.subscribe(  m => {
@@ -91,6 +92,7 @@ export class SocketIoService {
   connectSocket() {
     console.log('CONNECT TO SOCKET');
       this.disconectSocket();
+      let aE = this.authorizationExpired;
       this.socket = io.connect(this.baseUri, {query: 'token=' + this.getJWT()});
       this.socket.on('connect', () => {
       /* --- DEFAULT LISTENERS ---------------------------------------------------------------------------------- --- */
@@ -104,6 +106,7 @@ export class SocketIoService {
         console.log('SOCKET ERROR HANDLER', error);
         if (error.type === 'UnauthorizedError' || error.code === 'invalid_token') {
           console.log('Users token has expired');
+          aE.next('Users token has expired');
         }
       });
       /* --- USERS LISTENERS ------------------------------------------------------------------------------------ --- */
@@ -149,5 +152,8 @@ export class SocketIoService {
   }
   currentGame(): void {
     this.socket.emit(CardEvent[CardEvent.CardCurrentGame], {});
+  }
+  logout(): void {
+    this.authorizationExpired.next('Users token has expired');
   }
 }

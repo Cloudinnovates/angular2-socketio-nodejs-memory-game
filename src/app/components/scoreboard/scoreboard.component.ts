@@ -37,6 +37,10 @@ export class ScoreboardComponent implements OnInit {
   ngOnInit() {
     console.log('Hello Scoreboard');
   }
+
+  logout(){
+    this.messageService.logout();
+  }
 }
 @Component({
   selector: 'my-user-row',
