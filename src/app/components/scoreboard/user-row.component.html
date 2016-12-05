@@ -1,7 +1,7 @@
 <div  class="user">
   <p>
     {{ user.username }}
-    <span class="status pull-right">{{ user.isOnline?'online':'offline' }}</span>
+    <span class="status pull-right label" [class.label-success]="user.isOnline" [class.label-danger]="!user.isOnline">{{ user.isOnline?'online':'offline' }}</span>
   </p>
   <p class="score">
     {{user.score}}

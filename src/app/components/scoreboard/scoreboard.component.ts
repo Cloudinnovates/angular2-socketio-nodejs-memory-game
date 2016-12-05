@@ -20,7 +20,6 @@ export class ScoreboardComponent implements OnInit {
     );
     this.messageService.receivedSingleUser.subscribe(m => {
       if (m != null) {
-        console.log(m);
         let found = false;
         for ( let u of this.users ){
           if (u.id === m.id) {
@@ -53,7 +52,8 @@ export class UserRowComponent {
     this.messageService.receivedSingleUser.subscribe(m => {
       if (m != null && this.user != null) {
         if (this.user.id === m.id) {
-          this.user = m;
+          this.user.score = m.score;
+          this.user.isOnline = m.isOnline;
         }
       }
     });

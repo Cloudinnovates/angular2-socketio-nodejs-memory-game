@@ -11,8 +11,32 @@
       <h4 class="text-center">collaborative - no turn based </h4>
       <h1 class="text-center">Memory Game</h1>
       <h4 class="text-center">its never been more challenging </h4>
-      <div class="demo demo-one">
-        <my-card  *ngFor="let card of cardsDemo; let i = index;" [item]="card" [itemNumber]="i+1" [itemDemo]="true" ></my-card>
+
+      <div class="text-center">
+        <button class="h3  text-font-family-bungee btn" *ngIf="slideShowNumber==0" type="button" (click)="goToSlide(1)">learn how to play</button>
+      </div>
+
+      <div class="slide-container" *ngIf="slideShowNumber!=0">
+        <div class="slide slide1" *ngIf="slideShowNumber==1" >
+          <h3 class="text-center text-font-family-bungee">Step 1</h3>
+          <p class="text-center">Click the 2 cards and find a match.</p>
+          <div class="demo demo-one">
+            <my-card  *ngFor="let card of cardsDemo; let i = index;" [item]="card" [itemNumber]="i+1" [itemDemo]="true" (click)="demoClick(card)" ></my-card>
+          </div>
+          <h3 class="text-center text-font-family-bungee" [style.opacity]="winDemo?1:0">You Win !</h3>
+          <button class="btn-slide right" type="button" (click)="goToSlide(2)">next</button>
+        </div>
+        <div class="slide slide2" *ngIf="slideShowNumber==2">
+          <h3 class="text-center text-font-family-bungee">Step 2</h3>
+          <p class="text-center">You are not alone.<br><br> Online user will try to match two cards also.<br><br><b>Wait</b> it does not end there. <br><br> The game is not turn based.</p>
+          <button class="btn-slide left" type="button" (click)="goToSlide(1)">prev</button>
+          <button class="btn-slide right" type="button" (click)="goToSlide(3)">next</button>
+        </div>
+        <div class="slide slide3" *ngIf="slideShowNumber==3">
+          <h3 class="text-center text-font-family-bungee">Step 3</h3>
+          <p class="text-center">Have fun.<br><br> Click fast.<br><br><br> Best of luck,<br><b>Buzz Lightyear</b></p>
+          <button class="btn-slide left" type="button" (click)="goToSlide(2)">prev</button>
+        </div>
       </div>
     </div>
   </main>

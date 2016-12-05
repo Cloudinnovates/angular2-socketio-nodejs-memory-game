@@ -2,7 +2,7 @@
   <div id="page-content-wrapper" class="pane height-full">
     <div class="pane-body ">
       <div id="pane-users">
-          <my-user-row [user]="user" *ngFor="let user of users; let idx = index"></my-user-row>
+          <my-user-row [user]="user" *ngFor="let user of users; let idx = index" [style.order]="user.score"></my-user-row>
       </div>
     </div>
     <div class="pane-footer text-center ">

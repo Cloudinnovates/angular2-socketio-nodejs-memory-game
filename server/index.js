@@ -38,7 +38,7 @@ app.post('/user/create', function(req, res) {
       user.isOnline = true;
     }
   }else{
-    user = { id: uuid.v1(), username: userScheme.username, isOnline: true };
+    user = { id: uuid.v1(), username: userScheme.username, isOnline: true, score: 0 };
   }
   users.push(user);
   res.status(201).send({
@@ -74,11 +74,13 @@ io.on('connection', function(socket){
   }
   console.log(userFromMemory);
   socket.emit('UserAll', users);
-  // sendPlayer(userFromMemory);
+  sendPlayer(userFromMemory);
   /* --- USER SCORE LISTENERS ----------------------------------------------------------------------------------- --- */
-  function sendPlayer(user){
-    socket.emit('UsersSingle', JSON.stringify(user));
-    socket.broadcast.emit('UserSingle', JSON.stringify(user)); // Send message to everyone BUT sender
+  function sendPlayer(u){
+    console.log("POINTS UP");
+    console.log(u);
+    socket.emit('UserSingle', u);
+    socket.broadcast.emit('UserSingle', u); // Send message to everyone BUT sender
   }
   /* --- CHAT MESSAGES LISTENERS -------------------------------------------------------------------------------- --- */
   socket.on('SendMessage', function (msg) {
@@ -100,7 +102,8 @@ io.on('connection', function(socket){
       playerSelectedCards = [];
       cardsSelected[user.id] = playerSelectedCards;
     }
-    console.log(card);
+    console.log(parsedMsg.userId);
+    console.log(user);
     if(card.state === false && playerSelectedCards.length<2){
       card.state = true;
       card.userId = user.id;
@@ -122,7 +125,7 @@ io.on('connection', function(socket){
           cardOne.lock = true;
           cardTwo.lock = true;
           user.score = user.score*1+10;
-          // sendPlayer(user);
+          sendPlayer(user);
         }
         setTimeout(function(){
           socket.emit('CardStatus', JSON.stringify(cardOne)); // Send message to sender
@@ -159,11 +162,6 @@ io.on('connection', function(socket){
   });
 
   /* --- SOCKET IO GLOBAL FUNCTIONS  ---------------------------------------------------------------------------- --- */
-  function sendAllUserSortedByScore(){
-
-  }
-
-
   /**
    * Emit broatcast that user left the chat
    * @param userFound
@@ -175,6 +173,8 @@ io.on('connection', function(socket){
         username: socket.username,
         numUsers: 1
       });
+      userFromMemory.isOnline = false;
+      sendPlayer(userFromMemory);
     }
   }
   /**
@@ -210,108 +210,11 @@ function putUserOffline(id){
  */
 function resetCards(){
   cardsSelected = [];
-  cardsArray = [
-    { id: uuid.v1(), image: "1",  userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "1",  userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "2",  userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "2",  userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "3",  userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "3",  userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "4",  userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "4",  userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "5",  userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "5",  userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "6",  userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "6",  userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "7",  userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "7",  userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "8",  userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "8",  userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "9",  userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "9",  userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "10", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "10", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "11", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "11", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "12", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "12", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "13", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "13", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "14", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "14", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "15", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "15", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "16", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "16", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "17", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "17", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "18", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "18", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "19", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "19", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "20", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "20", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "21", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "21", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "22", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "22", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "23", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "23", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "24", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "24", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "25", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "25", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "26", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "26", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "27", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "27", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "28", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "28", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "29", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "29", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "30", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "30", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "31", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "31", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "32", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "32", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "33", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "33", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "34", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "34", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "35", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "35", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "36", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "36", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "37", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "37", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "38", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "38", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "39", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "39", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "40", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "40", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "41", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "41", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "42", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "42", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "43", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "43", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "44", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "44", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "45", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "45", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "46", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "46", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "47", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "47", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "48", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "48", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "49", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "49", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "50", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-    { id: uuid.v1(), image: "50", userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false },
-  ];
+  cardsArray = [];
+  for( var i = 1 ; i <=2 ; i++){ //this loop can go up to 50
+    cardsArray.push({ id: uuid.v1(), image: i+"",  userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false });
+    cardsArray.push({ id: uuid.v1(), image: i+"",  userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false });
+  };
   cardsArray = _.shuffle(cardsArray);
   return cardsArray;
 }

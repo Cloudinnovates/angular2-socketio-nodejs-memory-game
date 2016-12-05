@@ -9,7 +9,7 @@ import {User} from '../../models/user';
 })
 export class CardComponent implements OnInit {
   flip: boolean = false;
-  private user: User;
+  user: User;
   @Input() item: Card;
   @Input() itemNumber: number;
   @Input() itemDemo: boolean = false;
@@ -27,6 +27,8 @@ export class CardComponent implements OnInit {
     console.log('Hello Card');
     if(this.itemDemo === true){
       this.user = new User({id:1, username: "the demo guy"})
+      this.item.userId = this.user.id;
+      this.item.username = this.user.username;
     }else{
       this.user = this.userService.getCurrentUser();
     }
@@ -35,8 +37,6 @@ export class CardComponent implements OnInit {
     if (this.item.state === false && this.itemDemo === false) {
       this.item.userId = this.user.id;
       this.messageService.sendCard(this.item);
-    }else{
-      this.item.state = !this.item.state;
     }
   }
 

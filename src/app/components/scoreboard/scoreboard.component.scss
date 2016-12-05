@@ -7,3 +7,7 @@
 my-user-row{
   width: 100%;
 }
+#pane-users{
+  display: flex;
+  flex-direction: column-reverse;
+}

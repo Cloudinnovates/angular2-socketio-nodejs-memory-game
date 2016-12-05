@@ -86,3 +86,25 @@
   width: 428px;
   margin: 0 auto;
 }
+.slide-container{
+  background-color: rgba(0,0,0,0.5);
+  width: 75%;
+  margin: 0 auto;
+  padding: 30px 15px;
+  transition: height 0.4s ease;
+  position: relative;
+  .slide{
+    color: white;
+  }
+  .btn-slide{
+    background: transparent;
+    position: absolute;
+    bottom: 15px;
+    &.left{
+      left: 10px;
+    }
+    &.right{
+      right: 10px;
+    }
+  }
+}
