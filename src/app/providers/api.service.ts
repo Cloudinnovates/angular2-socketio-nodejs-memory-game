@@ -11,7 +11,7 @@ import 'rxjs/add/operator/map';
 
 @Injectable()
 export class UserService {
-  private baseUri                     = 'http://localhost:8889';
+  private baseUri                     = 'http://memory-game.aviro.io:8889';
   private loginUrl                    = this.baseUri + '/user/create';
   public userSubject: Subject<User>   = new BehaviorSubject<User>(null);
   public authError: Subject<string>   = new BehaviorSubject<string>(null);
@@ -55,7 +55,7 @@ export class UserService {
 @Injectable()
 export class SocketIoService {
   private jwt;
-  private baseUri                   = 'http://localhost:8889';
+  private baseUri                   = 'http://memory-game.aviro.io:8889';
   private socket;
   /* --- CHAT SUBJECTS ------------------------------------------------------------------------------------------ --- */
   authorizationExpired: Subject<string>  = new BehaviorSubject<string>(null);

@@ -211,7 +211,7 @@ function putUserOffline(id){
 function resetCards(){
   cardsSelected = [];
   cardsArray = [];
-  for( var i = 1 ; i <=2 ; i++){ //this loop can go up to 50
+  for( var i = 1 ; i <=15 ; i++){ //this loop can go up to 50
     cardsArray.push({ id: uuid.v1(), image: i+"",  userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false });
     cardsArray.push({ id: uuid.v1(), image: i+"",  userId: null, username: null, datetime: null, state: false, lock: false, isLoading: false });
   };
