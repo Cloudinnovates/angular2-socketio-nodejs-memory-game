@@ -24,12 +24,11 @@ export class CardComponent implements OnInit {
     );
   }
   ngOnInit() {
-    console.log('Hello Card');
-    if(this.itemDemo === true){
-      this.user = new User({id:1, username: "the demo guy"})
+    if (this.itemDemo === true) {
+      this.user = new User({id: 1, username: 'the demo guy'});
       this.item.userId = this.user.id;
       this.item.username = this.user.username;
-    }else{
+    } else {
       this.user = this.userService.getCurrentUser();
     }
   }

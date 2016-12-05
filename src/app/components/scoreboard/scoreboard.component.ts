@@ -37,7 +37,7 @@ export class ScoreboardComponent implements OnInit {
     console.log('Hello Scoreboard');
   }
 
-  logout(){
+  logout() {
     this.messageService.logout();
   }
 }
@@ -57,8 +57,5 @@ export class UserRowComponent {
         }
       }
     });
-  }
-  ngOnInit() {
-    console.log('Hello User Row');
   }
 }

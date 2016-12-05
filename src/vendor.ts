@@ -10,7 +10,4 @@ import 'rxjs';
 import '@angularclass/hmr';
 // Other vendors for example jQuery, Lodash or Bootstrap
 // You can import js, ts, css, sass, ...
-// import 'jquery/dist/jquery.js';
 import 'bootstrap-sass/assets/javascripts/bootstrap.min.js';
-// import './public/js/fancyInput.js';
-// import 'angular2-uuid';

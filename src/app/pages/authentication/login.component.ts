@@ -1,8 +1,7 @@
 import {Component, Output, EventEmitter, ViewChild} from '@angular/core';
-
 import {User} from '../../models/user';
 import {UserService} from '../../providers';
-declare var $:any;
+
 @Component({
   selector: 'my-login',
   templateUrl: './login.component.html'
@@ -23,8 +22,4 @@ export class LoginComponent {
       });
   }
 
-  ngAfterViewInit(){
-    console.log('Login Init');
-    // $(this.usernameInput.nativeElement).val('gasd');
-  }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, EventEmitter, Input, Output }  from '@angular/core';
+import {Component, OnInit, ViewChild, ElementRef, EventEmitter, Input, Output, AfterViewChecked}  from '@angular/core';
 import { SocketIoService , UserService }                                          from '../../providers';
 import { Message }                                                                from '../../models/message';
 import { User }                                                                   from '../../models/user';
@@ -8,7 +8,7 @@ import { User }                                                                 
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.scss']
 })
-export class ChatComponent implements OnInit {
+export class ChatComponent implements AfterViewChecked {
   @ViewChild('scrollMe') private myScrollContainer: ElementRef;
   messages: Array<any> = [];
   draftMessageText: string;
@@ -24,9 +24,6 @@ export class ChatComponent implements OnInit {
         }
       }, (e) => console.log(e)
     );
-  }
-  ngOnInit() {
-    console.log('Hello Chat');
   }
   onEnter(event: any): void {
     this.sendMessage();
@@ -62,7 +59,7 @@ export class ChatComponent implements OnInit {
   styleUrls: ['./message-row.component.scss'],
   templateUrl: './message-row.component.html'
 })
-export class MessageRowComponent {
+export class MessageRowComponent implements OnInit {
   @Input() message: Message;
   @Output() change = new EventEmitter<any>();
   messageMode: number;
